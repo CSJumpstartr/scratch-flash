@@ -109,6 +109,7 @@ public class Resources {
 	[Embed(source='UI/topbar/projectPageFlip.png')] private static const projectPageFlip:Class;
 	[Embed(source='UI/topbar/openInScratch.png')] private static const openInScratch:Class;
 	[Embed(source='UI/topbar/shrinkTool.png')] private static const shrinkTool:Class;
+	[Embed(source='UI/topbar/csj-logo-for-editor.png')] private static const csjlogo:Class; // CSJ
 
 	// Buttons
 	[Embed(source='UI/buttons/addItemOff.gif')] private static const addItemOff:Class;

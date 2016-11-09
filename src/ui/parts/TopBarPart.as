@@ -58,6 +58,8 @@ public class TopBarPart extends UIPart {
 	protected var loadExperimentalButton:Button;
 	protected var exportButton:Button;
 	protected var extensionLabel:TextField;
+	protected var loadButton:IconButton; // CSJ
+	protected var saveButton:IconButton; // CSJ
 
 	public function TopBarPart(app:Scratch) {
 		this.app = app;
@@ -71,6 +73,15 @@ public class TopBarPart extends UIPart {
 		languageButton.isMomentary = true;
 		addTextButtons();
 		addToolButtons();
+		
+		// CSJ create saveButton, loadButton, and logoButton
+		// "false" parameter is for "hasArrow" option of makeMenuButton
+		addChild(saveButton = makeMenuButton('Save Project', function():void { app.exportProjectToFile(); }, false));
+		addChild(loadButton = makeMenuButton('Load Project', function():void { app.runtime.selectProjectFile(); }, false));
+		addChild(logoButton = new IconButton(app.logoButtonPressed, Resources.createBmp('csjlogo')));
+		
+		// CSJ - commented out existing conflicting (and unused) setup of logoButton
+		/*
 		if (Scratch.app.isExtensionDevMode) {
 			addChild(logoButton = new IconButton(app.logoButtonPressed, Resources.createBmp('scratchxlogo')));
 			const desiredButtonHeight:Number = 20;
@@ -86,6 +97,7 @@ public class TopBarPart extends UIPart {
 				addChild(loadExperimentalButton = extensionDevManager.makeLoadExperimentalExtensionButton());
 			}
 		}
+		*/
 	}
 
 	public static function strings():Array {
@@ -165,7 +177,7 @@ public class TopBarPart extends UIPart {
 		}
 
 		// From here down, nextX is the next item's right edge and decreases after each item
-		nextX = w - 5;
+		nextX = w - 9; // CSJ - change 5 to 9
 
 		if (loadExperimentalButton) {
 			loadExperimentalButton.x = nextX - loadExperimentalButton.width;
@@ -178,18 +190,40 @@ public class TopBarPart extends UIPart {
 			exportButton.y = h + 5;
 			nextX = exportButton.x - 5;
 		}
-
+		
 		if (extensionLabel) {
 			extensionLabel.x = nextX - extensionLabel.width;
 			extensionLabel.y = h + 5;
 			nextX = extensionLabel.x - 5;
 		}
+
+		// CSJ - position saveButton
+		if (saveButton) {
+			saveButton.x = nextX - saveButton.width;
+			saveButton.y = buttonY;
+			nextX = saveButton.x - buttonSpace;
+		}
+		
+		// CSJ - position loadButton
+		if (loadButton) {
+			loadButton.x = nextX - loadButton.width;
+			loadButton.y = buttonY;
+			nextX = loadButton.x - buttonSpace;
+		}
+
 	}
 
 	public function refresh():void {
+		helpTool.visible = false; // CSJ - make helpTool always hidden
+		// CSJ - commented out existing helpTool.visible logic
+		/*
 		if (app.isOffline) {
 			helpTool.visible = app.isOffline;
 		}
+		*/
+		
+		saveButton.visible = true; // CSJ
+		loadButton.visible = true; // CSJ
 
 		if (Scratch.app.isExtensionDevMode) {
 			var hasExperimental:Boolean = app.extensionManager.hasExperimentalExtensions();

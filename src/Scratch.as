@@ -45,6 +45,8 @@ import flash.net.URLRequest;
 import flash.system.*;
 import flash.text.*;
 import flash.utils.*;
+import flash.net.navigateToURL; // CSJ added for logoButtonPressed page-load action
+import flash.net.URLRequestMethod; // CSJ added for logoButtonPressed page-load action
 
 import interpreter.*;
 
@@ -162,7 +164,7 @@ public class Scratch extends Sprite {
 	}
 
 	protected function initialize():void {
-		isOffline = !URLUtil.isHttpURL(loaderInfo.url);
+		isOffline = true; // CSJ - always behave as if offline; was !URLUtil.isHttpURL(loaderInfo.url);
 		hostProtocol = URLUtil.getProtocol(loaderInfo.url);
 
 		isExtensionDevMode = (loaderInfo.parameters['extensionDevMode'] == 'true');
@@ -212,8 +214,15 @@ public class Scratch extends Sprite {
 		setEditMode(startInEditMode());
 
 		// install project before calling fixLayout()
-		if (editMode) runtime.installNewProject();
-		else runtime.installEmptyProject();
+		// CSJ - load template project per projectURL parameter
+		if (editMode) {
+			if (this.loaderInfo.parameters.hasOwnProperty('projectURL')) {
+			    var projectURL = this.loaderInfo.parameters['projectURL'];
+				runtime.installProjectFromHTTP(projectURL);
+			} else {
+				runtime.installNewProject();
+			}
+		}  runtime.installEmptyProject();
 
 		fixLayout();
 		//Analyze.collectAssets(0, 119110);
@@ -221,6 +230,11 @@ public class Scratch extends Sprite {
 		//Analyze.countMissingAssets();
 
 		handleStartupParameters();
+
+		// CSJ -- set project name per projectName parameter
+		if (this.loaderInfo.parameters.hasOwnProperty('projectName')) {
+			setProjectName(this.loaderInfo.parameters['projectName']);
+		}
 	}
 
 	protected function handleStartupParameters():void {
@@ -1016,9 +1030,20 @@ public class Scratch extends Sprite {
 	}
 
 	public function logoButtonPressed(b:IconButton):void {
+
+		// CSJ - on logo click, return to template page per templatePageURL parameter
+		if (this.loaderInfo.parameters.hasOwnProperty('templatePageURL')) {
+		    var templatePageURL = this.loaderInfo.parameters['templatePageURL'];
+		    var request:URLRequest = new URLRequest(templatePageURL);
+		    request.method = URLRequestMethod.GET;
+		    var target:String = "_top";
+		    navigateToURL(request, target);
+		}
+		/*
 		if (isExtensionDevMode) {
 			externalCall('showPage', null, 'home');
 		}
+		*/
 	}
 
 	// -----------------------------
@@ -1084,6 +1109,8 @@ public class Scratch extends Sprite {
 			m.addItem('Save Project Summary', saveSummary);
 			m.addItem('Show version details', showVersionDetails);
 		}
+		// CSJ - commented out Experimental Extension filemenu item
+		/*
 		if (b.lastEvent.shiftKey && jsEnabled) {
 			m.addLine();
 			m.addItem('Import experimental extension', function ():void {
@@ -1100,6 +1127,7 @@ public class Scratch extends Sprite {
 				d.showOnStage(app.stage);
 			});
 		}
+		*/
 	}
 
 	public function showEditMenu(b:*):void {

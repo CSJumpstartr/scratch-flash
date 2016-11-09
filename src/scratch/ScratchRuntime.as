@@ -810,6 +810,24 @@ public class ScratchRuntime {
 		app.setProjectName(fileName);
 	}
 
+	// CSJ: support network loading of template project; called from Scratch.initialize()
+	public function installProjectFromHTTP(url:String):void {
+		var request:URLRequest = new URLRequest(url); 
+		var loader:URLLoader = new URLLoader(); 
+		loader.dataFormat = URLLoaderDataFormat.BINARY; 
+		loader.addEventListener(Event.COMPLETE, completeHTTPHandler); 
+		try { 
+			loader.load(request); 
+		} catch (error:Error) { 
+			trace("Unable to load URL: " + error); 
+		} 
+	}
+	// CSJ: callback function supporting installProjectFromHTTP
+	private function completeHTTPHandler(event:Event):void { 
+		var loader:URLLoader = URLLoader(event.target); 
+		installProjectFromData(loader.data); 
+	} 
+
 	public function installProjectFromData(data:ByteArray, saveForRevert:Boolean = true):void {
 		var newProject:ScratchStage;
 		stopAll();
