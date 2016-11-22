@@ -1172,6 +1172,7 @@ public class Scratch extends Sprite {
 			setProjectName('Untitled');
 			topBarPart.refresh();
 			stagePart.refresh();
+			clearSaveNeeded(); // CSJ
 			if (callback != null) callback();
 		}
 
@@ -1238,6 +1239,7 @@ public class Scratch extends Sprite {
 				// Some versions of the editor think of this as an "export" and some think of it as a "save"
 				saveNeeded = false;
 			}
+			clearSaveNeeded(); // CSJ
 			if (saveCallback != null) saveCallback();
 		}
 
@@ -1336,14 +1338,21 @@ public class Scratch extends Sprite {
 	public var saveNeeded:Boolean;
 
 	public function setSaveNeeded(saveNow:Boolean = false):void {
+		
+		topBarPart.setSaveWarning(); // CSJ experimental
+		
 		saveNow = false;
 		// Set saveNeeded flag and update the status string.
 		saveNeeded = true;
 		if (!wasEdited) saveNow = true; // force a save on first change
 		clearRevertUndo();
 	}
+	
+	// CSJ changed to public function
+	public function clearSaveNeeded():void {
 
-	protected function clearSaveNeeded():void {
+		topBarPart.clearSaveWarning();  // CSJ experimental
+
 		// Clear saveNeeded flag and update the status string.
 		function twoDigits(n:int):String {
 			return ((n < 10) ? '0' : '') + n

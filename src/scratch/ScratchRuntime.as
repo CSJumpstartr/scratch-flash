@@ -94,7 +94,8 @@ public class ScratchRuntime {
 	public function stepRuntime():void {
 		if (projectToInstall != null && (app.isOffline || app.isExtensionDevMode)) {
 			installProject(projectToInstall);
-			if (saveAfterInstall) app.setSaveNeeded(true);
+			//if (saveAfterInstall) app.setSaveNeeded(true); // CSJ
+			app.clearSaveNeeded(); // CSJ
 			projectToInstall = null;
 			saveAfterInstall = false;
 			return;

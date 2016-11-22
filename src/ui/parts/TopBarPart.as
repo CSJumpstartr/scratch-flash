@@ -224,7 +224,7 @@ public class TopBarPart extends UIPart {
 		
 		saveButton.visible = true; // CSJ
 		loadButton.visible = true; // CSJ
-
+		
 		if (Scratch.app.isExtensionDevMode) {
 			var hasExperimental:Boolean = app.extensionManager.hasExperimentalExtensions();
 			exportButton.visible = hasExperimental;
@@ -237,6 +237,14 @@ public class TopBarPart extends UIPart {
 			}
 		}
 		fixLayout();
+	}
+
+	// CSJ experiment for save project button
+	public function setSaveWarning() {
+		saveButton.setLabel("Save Project", CSS.buttonLabelOverColor , CSS.buttonLabelOverColor, false);
+	}
+	public function clearSaveWarning() {
+		saveButton.setLabel("Save Project", CSS.white , CSS.buttonLabelOverColor, false);
 	}
 
 	protected function addTextButtons():void {
